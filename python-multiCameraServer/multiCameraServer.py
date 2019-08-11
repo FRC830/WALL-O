@@ -9,8 +9,8 @@
 import json
 import time
 import sys
-
-from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
+import numpy 
+from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, CvSink
 from networktables import NetworkTablesInstance
 
 #   JSON format:
@@ -140,9 +140,14 @@ def startCamera(config):
 
     camera.setConfigJson(json.dumps(config.config))
     camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen)
-
     if config.streamConfig is not None:
         server.setConfigJson(json.dumps(config.streamConfig))
+
+    # CODE
+
+
+    
+
 
     return camera
 
@@ -164,10 +169,18 @@ if __name__ == "__main__":
         ntinst.startClientTeam(team)
 
     # start cameras
+    # ~ these are VideoSources
     cameras = []
     for cameraConfig in cameraConfigs:
         cameras.append(startCamera(cameraConfig))
+    inst = CameraServer.getInstance()
+    videoOutput = inst.putVideo("Rasp PI TEST", 320, 240)
 
+    videoSink = CvSink("Rasp PI TEST SINK")
+    img = numpy.ndarray((320,240,3))
+    videoSink.setSource(cameras[0])
     # loop forever
     while True:
-        time.sleep(10)
+        time.sleep(0.5)
+        videoSink.grabFrame(img)
+        videoOutput.putFrame(img)
