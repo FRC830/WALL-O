@@ -180,7 +180,8 @@ if __name__ == "__main__":
     img = numpy.ndarray((320,240,3))
     videoSink.setSource(cameras[0])
     # loop forever
+    fps = 2
     while True:
-        time.sleep(0.5)
+        time.sleep(1 / fps)
         videoSink.grabFrame(img)
         videoOutput.putFrame(img)
