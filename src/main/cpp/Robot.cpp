@@ -11,16 +11,10 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+
+
 void Robot::RobotInit() {
-//   Talon L1{PWM_L1};
-// 	Talon L2{PWM_L2};
-// 	Talon L3{PWM_L3};
-// 	Talon R1{PWM_R1};
-// 	Talon R2{PWM_R2};
-// 	Talon R3{PWM_R3};
-// 	SpeedControllerGroup Left{L1, L2, L3};
-// 	SpeedControllerGroup Right{R1, R2, R3};
-// 	DifferentialDrive drive {Left, Right};
+
 }
 
 void Robot::RobotPeriodic() {
@@ -32,7 +26,12 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+    double rawX = fabs(pilot.GetX(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(LEFT);
+    double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
+    double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
+	drive.DriveCartesian(rawX, -rawY, turn);
+}
 
 void Robot::TestPeriodic() {}
 
