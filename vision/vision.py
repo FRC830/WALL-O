@@ -178,25 +178,24 @@ if __name__ == "__main__":
     height = 320
     width = 240
     inst = CameraServer.getInstance()
-    videoOutput = inst.putVideo("Rasp PI Output", height, width)
-    # videoOutputMask = inst.putVideo("Rasp PI Output Mask", height, width)
-    
-    videoSink = CvSink("Rasp PI TEST SINK")
+    videoOutput = inst.putVideo("Rasp PI Output", height, width)    
+    videoSink = CvSink("Rasp PI Converter")
 
     img = np.ndarray((height,width,3))
     videoSink.setSource(cameras[0])
     # loop forever
     while True:
-        _, img = videoSink.grabFrame(img) # this outputs a CvImage
+        timestamp, img = videoSink.grabFrame(img) # this outputs a CvImage
+        if not timestamp:
+            continue
         # hsl filter
-
         # convert from float to uint8
         img = img.astype(dtype="uint8")
 
         # get binary mask
         hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        lowerBound = np.array([10, 100, 160])
-        upperBound = np.array([100, 255, 255])
+        lowerBound = np.array([15, 100, 160])
+        upperBound = np.array([60, 255, 255])
         mask = cv2.inRange(hsv_frame, lowerBound, upperBound)
 
         maskOut = cv2.bitwise_and(img, img, mask=mask) 
@@ -204,13 +203,13 @@ if __name__ == "__main__":
         # Get average position using moments
         # https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
         M = cv2.moments(mask)
-        print(M)
         if not M["m00"]:
             continue
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
-        
-        # Vertical red line
-        cv2.line(maskOut, (cX, height), (cX, 0), 0x0000ff)
+        ntinst.putNumber("centerX", cX)
+        # red line
+        cv2.line(maskOut, (cX, width), (cX, 0), (255, 0, 0))
+        cv2.line(maskOut, (height, cY), (0, cY), (255, 0, 0))
 
         videoOutput.putFrame(maskOut)
