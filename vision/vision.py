@@ -173,15 +173,18 @@ if __name__ == "__main__":
     cameras = []
     for cameraConfig in cameraConfigs:
         cameras.append(startCamera(cameraConfig))
+
+    height = 320
+    width = 240
     inst = CameraServer.getInstance()
-    videoOutput = inst.putVideo("Rasp PI TEST", 320, 240)
+    videoOutput = inst.putVideo("Rasp PI Output", height, width)
 
     videoSink = CvSink("Rasp PI TEST SINK")
-    img = numpy.ndarray((320,240,3))
+
+    img = numpy.ndarray((height,width,3))
     videoSink.setSource(cameras[0])
     # loop forever
-    fps = 2
     while True:
-        time.sleep(1 / fps)
-        videoSink.grabFrame(img)
+        _, img = videoSink.grabFrame(img) # this outputs a CvImage
+        # hsl filter
         videoOutput.putFrame(img)
