@@ -9,8 +9,9 @@
 import json
 import time
 import sys
-import numpy 
+import numpy as np
 from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, CvSink
+import cv2
 from networktables import NetworkTablesInstance
 
 #   JSON format:
@@ -178,13 +179,38 @@ if __name__ == "__main__":
     width = 240
     inst = CameraServer.getInstance()
     videoOutput = inst.putVideo("Rasp PI Output", height, width)
-
+    # videoOutputMask = inst.putVideo("Rasp PI Output Mask", height, width)
+    
     videoSink = CvSink("Rasp PI TEST SINK")
 
-    img = numpy.ndarray((height,width,3))
+    img = np.ndarray((height,width,3))
     videoSink.setSource(cameras[0])
     # loop forever
     while True:
         _, img = videoSink.grabFrame(img) # this outputs a CvImage
         # hsl filter
-        videoOutput.putFrame(img)
+
+        # convert from float to uint8
+        img = img.astype(dtype="uint8")
+
+        # get binary mask
+        hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        lowerBound = np.array([10, 100, 160])
+        upperBound = np.array([100, 255, 255])
+        mask = cv2.inRange(hsv_frame, lowerBound, upperBound)
+
+        maskOut = cv2.bitwise_and(img, img, mask=mask) 
+
+        # Get average position using moments
+        # https://www.learnopencv.com/find-center-of-blob-centroid-using-opencv-cpp-python/
+        M = cv2.moments(mask)
+        print(M)
+        if not M["m00"]:
+            continue
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+        
+        # Vertical red line
+        cv2.line(maskOut, (cX, height), (cX, 0), 0x0000ff)
+
+        videoOutput.putFrame(maskOut)
