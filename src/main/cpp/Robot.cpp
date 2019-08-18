@@ -13,12 +13,9 @@
 
 
 
-void Robot::RobotInit() {
+void Robot::RobotInit() {}
 
-}
-
-void Robot::RobotPeriodic() {
-}
+void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
 
@@ -31,6 +28,13 @@ void Robot::TeleopPeriodic() {
     double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
     double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
 	drive.DriveCartesian(rawX, -rawY, turn);
+
+    int centerX = frc::SmartDashboard::GetNumber("Center X", 160);
+    if (pilot.GetAButton()) {
+        int distance = centerX - 160;
+        double speed = (distance / 160) * .5;
+        drive.DriveCartesian(rawX, speed, turn);
+    }
 }
 
 void Robot::TestPeriodic() {}
