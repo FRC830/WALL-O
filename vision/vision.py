@@ -162,6 +162,7 @@ if __name__ == "__main__":
 
     # start NetworkTables
     ntinst = NetworkTablesInstance.getDefault()
+    table = ntinst.getTable("SmartDashboard")
     if server:
         print("Setting up NetworkTables server")
         ntinst.startServer()
@@ -207,7 +208,7 @@ if __name__ == "__main__":
             continue
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
-        ntinst.putNumber("centerX", cX)
+        table.putNumber("centerX", cX)
         # red line
         cv2.line(maskOut, (cX, width), (cX, 0), (255, 0, 0))
         cv2.line(maskOut, (height, cY), (0, cY), (255, 0, 0))
