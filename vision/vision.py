@@ -14,39 +14,6 @@ from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer, CvSink
 import cv2
 from networktables import NetworkTablesInstance
 
-#   JSON format:
-#   {
-#       "team": <team number>,
-#       "ntmode": <"client" or "server", "client" if unspecified>
-#       "cameras": [
-#           {
-#               "name": <camera name>
-#               "path": <path, e.g. "/dev/video0">
-#               "pixel format": <"MJPEG", "YUYV", etc>   // optional
-#               "width": <video mode width>              // optional
-#               "height": <video mode height>            // optional
-#               "fps": <video mode fps>                  // optional
-#               "brightness": <percentage brightness>    // optional
-#               "white balance": <"auto", "hold", value> // optional
-#               "exposure": <"auto", "hold", value>      // optional
-#               "properties": [                          // optional
-#                   {
-#                       "name": <property name>
-#                       "value": <property value>
-#                   }
-#               ],
-#               "stream": {                              // optional
-#                   "properties": [
-#                       {
-#                           "name": <stream property name>
-#                           "value": <stream property value>
-#                       }
-#                   ]
-#               }
-#           }
-#       ]
-#   }
-
 configFile = "/boot/frc.json"
 
 class CameraConfig: pass
@@ -143,13 +110,6 @@ def startCamera(config):
     camera.setConnectionStrategy(VideoSource.ConnectionStrategy.kKeepOpen)
     if config.streamConfig is not None:
         server.setConfigJson(json.dumps(config.streamConfig))
-
-    # CODE
-
-
-    
-
-
     return camera
 
 if __name__ == "__main__":
@@ -163,6 +123,7 @@ if __name__ == "__main__":
     # start NetworkTables
     ntinst = NetworkTablesInstance.getDefault()
     table = ntinst.getTable("SmartDashboard")
+    wall_o = table.getSubTable("WALL-O")
     if server:
         print("Setting up NetworkTables server")
         ntinst.startServer()
@@ -195,9 +156,14 @@ if __name__ == "__main__":
 
         # get binary mask
         hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        
-        lowerBound = np.array([15, 100, 160])
-        upperBound = np.array([60, 255, 255])
+        lowerbh = wall_o.getNumber("lowerBoundH", 15)
+        lowerbs = wall_o.getNumber("lowerBoundS", 100)
+        lowerbv = wall_o.getNumber("lowerBoundV", 130)
+        upperbh = wall_o.getNumber("upperBoundH", 60)
+        upperbs = wall_o.getNumber("upperBoundS", 255)
+        upperbv = wall_o.getNumber("upperBoundV", 255)
+        lowerBound = np.array([lowerbh, lowerbs, lowerbv])
+        upperBound = np.array([upperbh, upperbs, upperbv])
         mask = cv2.inRange(hsv_frame, lowerBound, upperBound)
 
         maskOut = cv2.bitwise_and(img, img, mask=mask) 
@@ -209,6 +175,7 @@ if __name__ == "__main__":
             continue
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
+
         table.putNumber("centerX", cX)
         # red line
         cv2.line(maskOut, (cX, width), (cX, 0), (255, 0, 0))

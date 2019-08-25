@@ -10,16 +10,36 @@
 #include <iostream>
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/BuiltInWidgets.h>
 
+using namespace frc;
+void makeSlider(std::string name, double defaultV, double max=255) {
+    wpi::StringMap<std::shared_ptr<nt::Value>> properties{
+        std::make_pair("min", nt::Value::MakeDouble(0)),
+        std::make_pair("max", nt::Value::MakeDouble(max))
+    };
+    Shuffleboard::GetTab("WALL-O")
+    .Add(name, defaultV)
+    .WithWidget(BuiltInWidgets::kNumberSlider)
+    .WithProperties(properties);
+}
 
-
-void Robot::RobotInit() {}
+void Robot::RobotInit() {
+    makeSlider("lowerBoundH", 15, 179);
+    makeSlider("lowerBoundS", 100);
+    makeSlider("lowerBoundV", 130);
+    makeSlider("upperBoundH", 60, 179);
+    makeSlider("upperBoundS", 255);
+    makeSlider("upperBoundV", 255);
+}
 
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
 
 void Robot::AutonomousPeriodic() {}
+
 
 void Robot::TeleopInit() {}
 
@@ -28,16 +48,18 @@ void Robot::TeleopPeriodic() {
     double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
     double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
     
-	drive.DriveCartesian(rawX, -rawY, turn);
-
-    int centerX = frc::SmartDashboard::GetNumber("Center X", 160);
+    // double / int > DOUBLE
+    
+    double centerX = frc::SmartDashboard::GetNumber("centerX", 160);
     if (pilot.GetAButton()) {
-        int distance = centerX - 160;
+        double distance = centerX - 160;
         double speed = (distance / 160) * .5;
-        drive.DriveCartesian(rawX, speed, turn);
+        frc::SmartDashboard::PutNumber("Speed",speed);
+        drive.DriveCartesian(speed, -rawY, turn);
+    } else {
+      	drive.DriveCartesian(rawX, -rawY, turn);
     }
 }
-
 void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
