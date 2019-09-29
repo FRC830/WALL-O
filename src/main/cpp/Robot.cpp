@@ -47,6 +47,9 @@ void Robot::TeleopPeriodic() {
     double rawX = fabs(pilot.GetX(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(LEFT);
     double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
     double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
+    double testmotorspeed = pilot.GetTriggerAxis(LEFT);
+
+    SPARKMOTOR.Set(testmotorspeed);
     
     // double / int > DOUBLE
     
