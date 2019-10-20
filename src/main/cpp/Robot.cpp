@@ -27,7 +27,7 @@ void Robot::TeleopPeriodic() {
     double rawX = fabs(pilot.GetX(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(LEFT);
     double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
     double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
-    
+
 	drive.DriveCartesian(rawX, -rawY, turn);
 
     int centerX = frc::SmartDashboard::GetNumber("Center X", 160);
@@ -41,5 +41,5 @@ void Robot::TeleopPeriodic() {
 void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() { return frc::StartRobot<Robot>(); } 
 #endif

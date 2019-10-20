@@ -195,8 +195,8 @@ if __name__ == "__main__":
 
         # get binary mask
         hsv_frame = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        
-        lowerBound = np.array([15, 100, 160])
+
+        lowerBound = np.array([15, 100, 130])
         upperBound = np.array([60, 255, 255])
         mask = cv2.inRange(hsv_frame, lowerBound, upperBound)
 
