@@ -12,6 +12,7 @@
 #include <frc/smartdashboard/SendableChooser.h>
 #include <ctre/Phoenix.h>
 #include <frc/WPILib.h>
+#include <rev/CANSparkMax.h>
 
 class Robot : public frc::TimedRobot {
 public:
@@ -27,11 +28,20 @@ public:
     const int PIN_LB = 1;
     const int PIN_RB = 6;
     const int PIN_RF = 5;
+    const int DEVICE_ID = 2;
+    // Add PWM definitions for RGB
+    // Red - 9
+    // Green - 8
+    // Blue - 7
+    PWM Red{9};
+    PWM Green{8};
+    PWM Blue{7};
     // motors    
     WPI_TalonSRX LB{PIN_LB};
     WPI_TalonSRX RB{PIN_RB};
     WPI_VictorSPX LF{PIN_LF};
     WPI_VictorSPX RF{PIN_RF};
+    rev::CANSparkMax SPARKMOTOR{DEVICE_ID,rev::CANSparkMax::MotorType::kBrushless};
     frc::MecanumDrive drive {LF, LB, RF, RB};
     // controls
     frc::XboxController pilot{0};
