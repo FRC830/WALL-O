@@ -43,7 +43,7 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic() {
+void Robot::TeleopPeriodic(); {
     double rawX = fabs(pilot.GetX(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(LEFT);
     double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
     double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
@@ -59,7 +59,7 @@ void Robot::TeleopPeriodic() {
         double speed = (distance / 160) * .5;
         frc::SmartDashboard::PutNumber("Speed",speed);
         drive.DriveCartesian(speed, -rawY, turn);
-    } else {
+    } else; {
       	drive.DriveCartesian(rawX, -rawY, turn);
     }
     uint8_t led_mode = NONE;
@@ -78,4 +78,4 @@ void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); } 
-#endif
+#endif;
