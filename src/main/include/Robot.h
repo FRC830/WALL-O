@@ -33,9 +33,6 @@ public:
     // Red - 9
     // Green - 8
     // Blue - 7
-    PWM Red{9};
-    PWM Green{8};
-    PWM Blue{7};
     // motors    
     WPI_TalonSRX LB{PIN_LB};
     WPI_TalonSRX RB{PIN_RB};
