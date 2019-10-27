@@ -6,7 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
-
+#include "led_strip.h"
 #include <iostream>
 
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -61,6 +61,17 @@ void Robot::TeleopPeriodic() {
         drive.DriveCartesian(speed, -rawY, turn);
     } else {
       	drive.DriveCartesian(rawX, -rawY, turn);
+    }
+    uint8_t led_mode = NONE;
+    if (pilot.GetBButton()) {
+        led_mode = FAST_RAINBOW;
+    } else if (pilot.GetXButton()) {
+        led_mode = RATPACK;
+    } else if (pilot.GetYButton()) {
+        led_mode = SLOW_RAINBOW;
+    }
+    if (led_mode != NONE) {
+        arduino.WriteBulk(&led_mode, 1);
     }
 }
 void Robot::TestPeriodic() {}

@@ -58,6 +58,7 @@ model {
                 }
                 exportedHeaders {
                     srcDir 'src/main/include'
+                    srcDir 'led_strip/include'
                     if (includeSrcInIncludeRoot) {
                         srcDir 'src/main/cpp'
                     }
