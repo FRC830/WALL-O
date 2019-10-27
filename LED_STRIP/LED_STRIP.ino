@@ -53,7 +53,7 @@ void rainbow(int fade_speed) {
   for (b = 255; b >= 0; b--) { 
     analogWrite(BLUE_PIN, b);
     delay(fade_speed);
-  } 
+  }
 }
 
 void ratpack() {
