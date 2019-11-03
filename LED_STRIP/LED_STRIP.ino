@@ -55,7 +55,61 @@ void rainbow(int fade_speed) {
     delay(fade_speed);
   }
 }
+void Alliance (bool color)
+{
+    //true = red
+    //false = blue
+    if (color == true)//the color is red not blue
+    {
+      //wipe to red
+      analogWrite(RED_PIN, 255);
+      analogWrite(BLUE_PIN, 1);
+      analogWrite(GREEN_PIN, 0);
+      delay(1000);
+      
+      //fade to yellow
+      for (int g = 0; g == 255; g++) { 
+        analogWrite(GREEN_PIN, (int)(g*(217/255));
+        delay(2));//ms
+      }
 
+      delay(1000);
+
+      //fade to red
+      for (g = 255; g == 0; g--)
+      {
+        analogWrite(GREEN_PIN, (int)(g*(217/255));
+        delay(2);//ms
+      }
+    }
+    else if (color == false)//THE COLOR IS BLUE, NOT RED  
+    {
+      //wipe to blue
+      analogWrite(RED_PIN, 0);
+      analogWrite(BLUE_PIN, 255);
+      analogWrite(GREEN_PIN, 0);
+      delay(1000);
+      
+      //fade to yellow
+      for (int g = 0; g == 255; g++) { 
+        analogWrite(GREEN_PIN, (int)(g*(217/255));
+        analogWrite(RED_PIN, (int)(g*(217/255));
+        analogWrite(BLUE_PIN, 255-G);
+        delay(2));//ms
+      }
+
+      delay(1000);
+
+      //fade to red
+      for (g = 255; g == 0; g--)
+      {
+        analogWrite(GREEN_PIN, (int)(g*(217/255));
+        analogWrite(RED_PIN, (int)(g*(217/255));
+        analogWrite(BLUE_PIN, 255-G);
+        delay(2));//ms
+      }
+    }
+}
 void ratpack() {
   int ratpack_blue[] = {12, 38, 145};
   int ratpack_yellow[] = {229, 255, 0};
@@ -81,6 +135,10 @@ void loop() { // TeleopPeriodic
     case RATPACK:
       ratpack();
       break;
+    case RED_ALLIANCE
+      Alliance(true);
+    case BLUE_ALLIANCE
+      Alliance(false);
     case NONE:
     default:
       setRed();
