@@ -68,17 +68,17 @@ void Alliance (bool color)
       delay(1000);
       
       //fade to yellow
-      for (int g = 0; g == 255; g++) { 
-        analogWrite(GREEN_PIN, (int)(g*(217/255));
-        delay(2));//ms
+      for (int g = 0; g != 255; g++) { 
+        analogWrite(GREEN_PIN, (int)(g*(217/255)));
+        delay(2);//ms
       }
 
       delay(1000);
 
       //fade to red
-      for (g = 255; g == 0; g--)
+      for (int g = 255; g != 0; g--)
       {
-        analogWrite(GREEN_PIN, (int)(g*(217/255));
+        analogWrite(GREEN_PIN, (int)(g*(217/255)));
         delay(2);//ms
       }
     }
@@ -91,22 +91,22 @@ void Alliance (bool color)
       delay(1000);
       
       //fade to yellow
-      for (int g = 0; g == 255; g++) { 
-        analogWrite(GREEN_PIN, (int)(g*(217/255));
-        analogWrite(RED_PIN, (int)(g*(217/255));
-        analogWrite(BLUE_PIN, 255-G);
-        delay(2));//ms
+      for (int g = 0; g != 255; g++) { 
+        analogWrite(GREEN_PIN, (int)(g*(217/255)));
+        analogWrite(RED_PIN, (int)(g*(217/255)));
+        analogWrite(BLUE_PIN, 255-g);
+        delay(2);//ms
       }
 
       delay(1000);
 
       //fade to red
-      for (g = 255; g == 0; g--)
+      for (int g = 255; g != 0; g--)
       {
-        analogWrite(GREEN_PIN, (int)(g*(217/255));
-        analogWrite(RED_PIN, (int)(g*(217/255));
-        analogWrite(BLUE_PIN, 255-G);
-        delay(2));//ms
+        analogWrite(GREEN_PIN, (int)(g*(217/255)));
+        analogWrite(RED_PIN, (int)(g*(217/255)));
+        analogWrite(BLUE_PIN, 255-g);
+        delay(2);//ms
       }
     }
 }
@@ -135,10 +135,12 @@ void loop() { // TeleopPeriodic
     case RATPACK:
       ratpack();
       break;
-    case RED_ALLIANCE
+    case RED_ALLIANCE:
       Alliance(true);
-    case BLUE_ALLIANCE
+      break;
+    case BLUE_ALLIANCE:
       Alliance(false);
+      break;
     case NONE:
     default:
       setRed();
