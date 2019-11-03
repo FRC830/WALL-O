@@ -32,6 +32,15 @@ void Robot::RobotInit() {
     makeSlider("upperBoundH", 60, 179);
     makeSlider("upperBoundS", 255);
     makeSlider("upperBoundV", 255);
+    sparkMotor.RestoreFactoryDefaults();
+    auto encoder = sparkMotor.GetEncoder();
+    encoder.SetPosition(0);
+    auto PID_controller = sparkMotor.GetPIDController();
+    PID_controller.SetFeedbackDevice(encoder);
+    PID_controller.SetP(1);
+    PID_controller.SetI(0);
+    PID_controller.SetD(0);
+
 }
 
 void Robot::RobotPeriodic() {}
@@ -43,14 +52,18 @@ void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
 
-void Robot::TeleopPeriodic(); {
+void Robot::TeleopPeriodic() {
     double rawX = fabs(pilot.GetX(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(LEFT);
     double rawY = fabs(pilot.GetY(LEFT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetY(LEFT);
     double turn = fabs(pilot.GetX(RIGHT)) < DEADZONE_THRESHOLD ? 0 : pilot.GetX(RIGHT);
-    double testmotorspeed = pilot.GetTriggerAxis(LEFT);
+    double rotations = pilot.GetTriggerAxis(LEFT);
 
-    SPARKMOTOR.Set(testmotorspeed);
+    auto PID_controller = sparkMotor.GetPIDController();
+
+    PID_controller.SetReference(rotations, rev::ControlType::kPosition);
     
+
+
     // double / int > DOUBLE
     
     double centerX = frc::SmartDashboard::GetNumber("centerX", 160);
@@ -78,4 +91,4 @@ void Robot::TestPeriodic() {}
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); } 
-#endif;
+#endif

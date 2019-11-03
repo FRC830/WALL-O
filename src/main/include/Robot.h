@@ -40,7 +40,7 @@ public:
     WPI_VictorSPX RF{PIN_RF};
     frc::I2C arduino{frc::I2C::Port::kOnboard, 4};
 
-    rev::CANSparkMax SPARKMOTOR{DEVICE_ID,rev::CANSparkMax::MotorType::kBrushless};
+    rev::CANSparkMax sparkMotor{DEVICE_ID,rev::CANSparkMax::MotorType::kBrushless};
     frc::MecanumDrive drive {LF, LB, RF, RB};
     // controls
     frc::XboxController pilot{0};
