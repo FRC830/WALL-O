@@ -55,7 +55,50 @@ void rainbow(int fade_speed) {
     delay(fade_speed);
   }
 }
+void Alliance (bool color) {
+    //true = red
+    //false = blue
+    if (color == true) {
+      // wipe to red
+      int red[] = {255,0,0};
+      setColor(pin_numbers, red);
+      delay(1000);
+      // fade to yellow
+      for (int g = 0; g != 255; g++) { 
+        analogWrite(GREEN_PIN, (int) (g*217/255));
+        delay(2);
+      }
+      delay(1000);
+      // fade to red
+      for (int g = 255; g != 0; g--) {
+        analogWrite(GREEN_PIN, (int)(g*217/255));
+        delay(2);//ms
+      }
+    } else {
+      // wipe to blue
+      int blue[] = {0,0,255};
+      setColor(pin_numbers, blue);
+      delay(1000);
+      
+      // fade to yellow
+      for (int g = 0; g != 255; g++) { 
+        analogWrite(GREEN_PIN, (int)(g*217/255));
+        analogWrite(RED_PIN, (int)(g*217/255));
+        analogWrite(BLUE_PIN, 255-g);
+        delay(2);// ms
+      }
 
+      delay(1000);
+
+      // fade to blue
+      for (int g = 255; g != 0; g--) {
+        analogWrite(GREEN_PIN, (int)(g*217/255));
+        analogWrite(RED_PIN, (int)(g*217/255));
+        analogWrite(BLUE_PIN, 255-g);
+        delay(2);// ms
+      }
+    }
+}
 void ratpack() {
   int ratpack_blue[] = {12, 38, 145};
   int ratpack_yellow[] = {229, 255, 0};
@@ -81,6 +124,12 @@ void loop() { // TeleopPeriodic
     case RATPACK:
       ratpack();
       break;
+    case RED_ALLIANCE:
+      Alliance(true);
+      break;
+    case BLUE_ALLIANCE:
+      Alliance(false);
+      break;
     case NONE:
     default:
       setRed();
@@ -88,7 +137,7 @@ void loop() { // TeleopPeriodic
 }
 
 // take in a list of pin numbers, and a list of rgb values and set the strip to the desired color
-void setColor(int pins[], int colors[]) {
+void setColor(int pins[3], int colors[3]) {
   for (int i = 0; i < 3; i++) {
     // analogWrite(pin, val)
     analogWrite(pins[i], colors[i]);

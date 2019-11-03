@@ -66,7 +66,7 @@ void Robot::TeleopPeriodic() {
 
     // double / int > DOUBLE
     
-    double centerX = frc::SmartDashboard::GetNumber("centerX", 160);
+    double centerX = SmartDashboard::GetNumber("centerX", 160);
     if (pilot.GetAButton()) {
         double distance = centerX - 160;
         double speed = (distance / 160) * .5;
@@ -76,13 +76,30 @@ void Robot::TeleopPeriodic() {
       	drive.DriveCartesian(rawX, -rawY, turn);
     }
     uint8_t led_mode = NONE;
-    if (pilot.GetBButton()) {
-        led_mode = FAST_RAINBOW;
-    } else if (pilot.GetXButton()) {
+    // TODO switch to DPad
+    // TODO add alliance mode
+    int pov = pilot.GetPOV();
+    if (45 <= pov && pov <= 135) {
+        // right
+        // alliance
+        DriverStation::Alliance allianceColor = DriverStation::GetInstance().GetAlliance();
+        
+        if (allianceColor == DriverStation::Alliance::kRed) {
+            led_mode = RED_ALLIANCE;
+        } else {
+            led_mode = BLUE_ALLIANCE;
+        }
+    } else if (225 <= pov && pov <= 315) {
+        // left
         led_mode = RATPACK;
-    } else if (pilot.GetYButton()) {
+    } else if (315 <= pov || (0 <= pov && pov <= 45)) {
+        // up
         led_mode = SLOW_RAINBOW;
+    } else if (135 <= pov && pov <= 225) {
+        // down
+        led_mode = FAST_RAINBOW;
     }
+    // Alliance red -> yellow -> red
     if (led_mode != NONE) {
         arduino.WriteBulk(&led_mode, 1);
     }
